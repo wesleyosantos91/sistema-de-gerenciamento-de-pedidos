@@ -1,3 +1,45 @@
+<div align="center" width="100%">
+    <img src="asserts/logo-wos.jpg" alt="logo" width="200" height="auto" />
+</div>
+
+</br>
+
+<div align="center">
+
+![](https://img.shields.io/badge/Status-Em%20Desenvolvimento-orange)
+</div>
+
+<div align="center">
+
+![](https://img.shields.io/badge/Autor-Wesley%20Oliveira%20Santos-brightgreen)
+
+<p>
+  <a href="https://github.com/wesleyosantos91/sistema-de-gerenciamento-de-pedidos/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/wesleyosantos91/sistema-de-gerenciamento-de-pedidos" alt="contributors" />
+  </a>
+  <a href="">
+    <img src="https://img.shields.io/github/last-commit/wesleyosantos91/sistema-de-gerenciamento-de-pedidos" alt="last update" />
+  </a>
+  <a href="https://github.com/wesleyosantos91/sistema-de-gerenciamento-de-pedidos/network/members">
+    <img src="https://img.shields.io/github/forks/wesleyosantos91/sistema-de-gerenciamento-de-pedidos" alt="forks" />
+  </a>
+  <a href="https://github.com/wesleyosantos91/sistema-de-gerenciamento-de-pedidos/stargazers">
+    <img src="https://img.shields.io/github/stars/wesleyosantos91/sistema-de-gerenciamento-de-pedidos" alt="stars" />
+  </a>
+  <a href="https://github.com/wesleyosantos91/sistema-de-gerenciamento-de-pedidos/issues/">
+    <img src="https://img.shields.io/github/issues/wesleyosantos91/sistema-de-gerenciamento-de-pedidos" alt="open issues" />
+  </a>
+  <a href="https://github.com/wesleyosantos91/sistema-de-gerenciamento-de-pedidos/pulls/">
+    <img src="https://img.shields.io/github/issues-pr/wesleyosantos91/sistema-de-gerenciamento-de-pedidos" alt="pull requests" />
+  </a>
+  <a href="https://github.com/wesleyosantos91/sistema-de-gerenciamento-de-pedidos/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/wesleyosantos91/sistema-de-gerenciamento-de-pedidos" alt="license" />
+  </a>
+</p>
+
+</div>
+
+
 # 📦 Desafio Técnico - Sistema de Gerenciamento de Pedidos
 
 ## 📌 Descrição
@@ -6,7 +48,7 @@ Este desafio consiste na criação de um sistema de gerenciamento de pedidos par
 
 O candidato pode escolher entre **Java com Spring Boot**, **Java com Quarkus** ou **Golang** para a implementação.
 
-Desafio gerado por Chat GPT
+Desafio gerado por Chat GPT para estudo
 
 ---
 
