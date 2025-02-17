@@ -48,7 +48,7 @@ Este desafio consiste na criação de um sistema de gerenciamento de pedidos par
 
 O candidato pode escolher entre **Java com Spring Boot**, **Java com Quarkus** ou **Golang** para a implementação.
 
-Desafio gerado por Chat GPT para estudo
+Desafio Técnico gerado por Chat GPT para estudo.
 
 ---
 
