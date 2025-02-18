@@ -1,0 +1,15 @@
+quarkus:
+  datasource:
+    devservices:
+      enabled: false
+    db-kind: postgresql
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    jdbc:
+      url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/quarkus
+  flyway:
+    migrate-at-start: true
+    jdbc-url: ${quarkus.datasource.jdbc.url}
+    username: ${quarkus.datasource.username}
+    password: ${quarkus.datasource.password}
+    locations: classpath:db/migration

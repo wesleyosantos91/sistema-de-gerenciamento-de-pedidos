@@ -13,7 +13,7 @@
 
 ![](https://img.shields.io/badge/Autor-Wesley%20Oliveira%20Santos-brightgreen)
 ![](https://img.shields.io/badge/Language-java-brightgreen)
-![](https://img.shields.io/badge/Framework-quarkus-brightgreen)
+![](https://img.shields.io/badge/Framework-springboot-brightgreen)
 
 </div>
 
@@ -37,9 +37,9 @@ Confira o enunciado completo, [clicando aqui](./problem.md).
 
 ## Stack Utilizada
 - **Java 21**
-- **Quarkus**
-- **Panache**
-- **Smallrye Openapi**
+- **Spring Boot 3**
+- **Spring Data**
+- **Spring Docs**
 - **Flyway**
 - **Postgres**
 - **Datadog**
@@ -48,14 +48,14 @@ Confira o enunciado completo, [clicando aqui](./problem.md).
 ## Aplicações
 
 ### Modulo Spring
-| Nome           | Descrição                                                                                                |
-|----------------|----------------------------------------------------------------------------------------------------------|
-| modulo Quarkus | Esse microserviço tem a reposnsabilidade de tratar todo core do contexto do desafio feito em quarkus. |
+| Nome          | Descrição                                                                                                |
+|---------------|----------------------------------------------------------------------------------------------------------|
+| modulo spring | Esse microserviço tem a reposnsabilidade de tratar todo core do contexto do desafio feito em springboot. |
 
 #### Portas
-| Aplicação      | Porta |
-|----------------|-------|
-| modulo-quarkus | 8080  |
+| Aplicação     | Porta |
+|---------------|-------|
+| modulo-spring | 8080  |
 
 #### Setup
 
