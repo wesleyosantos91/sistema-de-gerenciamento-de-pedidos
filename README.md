@@ -39,7 +39,6 @@
 
 </div>
 
-
 # 📦 Desafio Técnico - Sistema de Gerenciamento de Pedidos
 
 ## 📌 Descrição
@@ -61,6 +60,12 @@ O repositório contém implementações separadas por módulos, permitindo a esc
 - **`modulo-spring`** → Implementação em [Java com Spring Boot](./modulo-spring)
 
 Cada módulo possui seu próprio `README.md` com instruções detalhadas para execução.
+
+## 🔗 Link para Desafio Técnico Completo
+
+Para ver a descrição completa do problema e os requisitos detalhados, consulte o arquivo [PROBLEM.md](PROBLEM.md).
+
+---
 
 ## ⚙️ Requisitos
 

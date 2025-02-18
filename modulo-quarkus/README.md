@@ -20,9 +20,8 @@
 <div align="center">
 
 # 📦 Desafio Técnico - Sistema de Gerenciamento de Pedidos
-  <img src="../asserts/picpay-logo.jpg" alt="logo" width="200" height="auto" />
 
-Confira o enunciado completo, [clicando aqui](./problem.md).
+Confira o enunciado completo, [clicando aqui](../problem.md).
 
 </div>
 
