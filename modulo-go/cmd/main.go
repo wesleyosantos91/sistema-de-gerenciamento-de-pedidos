@@ -1,8 +1,8 @@
 package main
 
 import (
+	"modulo-go/internal/config"
 	"modulo-go/internal/db"
-	"modulo-go/internal/util"
 	"os"
 )
 
@@ -13,10 +13,8 @@ func main() {
 		env = "dev"
 	}
 
-	util.LoadAppEnv(env)
+	config.LoadAppEnv(env)
 
-	database := db.LoadDatabase()
-	defer database.Close()
-
-	db.RunMigrations(database)
+	db.Connect()
+	db.RunMigrations(db.InstanceSqlDatabase())
 }

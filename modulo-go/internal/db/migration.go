@@ -12,6 +12,7 @@ import (
 func RunMigrations(db *sql.DB) {
 
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
+
 	if err != nil {
 		log.Fatalf("❌ Erro ao criar driver do migrate: %v", err)
 	}
