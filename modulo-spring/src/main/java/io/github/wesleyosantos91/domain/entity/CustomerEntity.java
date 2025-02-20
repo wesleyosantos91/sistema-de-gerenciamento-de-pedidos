@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.Instant;
 import java.util.LinkedHashSet;
@@ -29,6 +30,7 @@ public class CustomerEntity {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @CreatedDate
     @ColumnDefault("now()")
     @Column(name = "created_at")
     private Instant createdAt;

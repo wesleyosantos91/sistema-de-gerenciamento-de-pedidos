@@ -17,7 +17,7 @@ spring:
     url: ${spring.datasource.url}
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
-    locations: classpath:db/migration
+    locations: classpath:db/migrations
 management:
   datadog:
     metrics:

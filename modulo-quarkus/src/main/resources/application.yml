@@ -12,4 +12,4 @@ quarkus:
     jdbc-url: ${quarkus.datasource.jdbc.url}
     username: ${quarkus.datasource.username}
     password: ${quarkus.datasource.password}
-    locations: classpath:db/migration
+    locations: classpath:db/migrations
