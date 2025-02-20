@@ -3,7 +3,6 @@ package io.github.wesleyosantos91.domain.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -15,7 +14,7 @@ import java.util.UUID;
 @Table(name = "tb_products")
 public class ProductEntity {
     @Id
-    @ColumnDefault("gen_random_uuid()")
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     private UUID id;
 
@@ -32,9 +31,21 @@ public class ProductEntity {
     @Column(name = "stock_quantity", nullable = false)
     private Integer stockQuantity;
 
-    @ColumnDefault("now()")
     @Column(name = "created_at")
     private Instant createdAt;
+
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @PrePersist
+    public void onPrePersist() {
+        this.createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        this.updatedAt = Instant.now();
+    }
 
     @OneToMany(mappedBy = "product")
     private Set<OrderItemEntity> orderItemEntities = new LinkedHashSet<>();
@@ -87,4 +98,11 @@ public class ProductEntity {
         this.createdAt = createdAt;
     }
 
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

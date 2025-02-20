@@ -15,7 +15,6 @@ import java.util.UUID;
 public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @ColumnDefault("gen_random_uuid()")
     @Column(name = "id", nullable = false)
     private UUID id;
 
@@ -30,9 +29,21 @@ public class OrderEntity {
     @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalPrice;
 
-    @ColumnDefault("now()")
     @Column(name = "created_at")
     private Instant createdAt;
+
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @PrePersist
+    public void onPrePersist() {
+        this.createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        this.updatedAt = Instant.now();
+    }
 
     public UUID getId() {
         return id;
@@ -66,4 +77,11 @@ public class OrderEntity {
         this.createdAt = createdAt;
     }
 
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

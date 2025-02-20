@@ -2,7 +2,6 @@ package io.github.wesleyosantos91.domain.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -13,7 +12,7 @@ import java.util.UUID;
 @Table(name = "tb_order_items")
 public class OrderItemEntity {
     @Id
-    @ColumnDefault("gen_random_uuid()")
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     private UUID id;
 
@@ -31,7 +30,6 @@ public class OrderItemEntity {
     @Column(name = "unit_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal unitPrice;
 
-    @ColumnDefault("((quantity))")
     @Column(name = "total_price", precision = 10, scale = 2)
     private BigDecimal totalPrice;
 

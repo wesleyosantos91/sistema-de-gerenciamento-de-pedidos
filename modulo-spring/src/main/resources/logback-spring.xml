@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property resource="application.yml"/>
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
+    <contextName>${APP_NAME}</contextName>
+    <springProfile name="!non-json-logs">
+        <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <pattern>
+                        <omitEmptyFields>true</omitEmptyFields>
+                        <pattern>
+                            {
+                            "traceId": "%X{traceId:-}",
+                            "x-flowID": "%X{spanId:-}",
+                            "x-correlationID": "%X{x-correlationID:-}",
+                            "parent": "%X{parentId:-}",
+                            "exportable": "%X{sampled:-}",
+                            "pid": "${PID:-}"
+                            }
+                        </pattern>
+                    </pattern>
+                    <contextName>
+                        <fieldName>app</fieldName>
+                    </contextName>
+                    <timestamp>
+                        <fieldName>ts</fieldName>
+                        <timeZone>UTC</timeZone>
+                        <pattern>dd-MM-yyyy'T'HH:mm:ss.SSS</pattern>
+                    </timestamp>
+                    <logLevel>
+                        <fieldName>level</fieldName>
+                    </logLevel>
+                    <threadName>
+                        <fieldName>thread</fieldName>
+                    </threadName>
+                    <loggerName>
+                        <fieldName>logger</fieldName>
+                        <shortenedLoggerNameLength>20</shortenedLoggerNameLength>
+                    </loggerName>
+                    <mdc>
+                        <excludeMdcKeyName>traceId</excludeMdcKeyName>
+                        <excludeMdcKeyName>spanId</excludeMdcKeyName>
+                    </mdc>
+                    <message>
+                        <fieldName>msg</fieldName>
+                    </message>
+                    <stackHash>
+                        <fieldName>exception-hash</fieldName>
+                    </stackHash>
+                    <stackTrace>
+                        <fieldName>exception</fieldName>
+                        <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                            <maxDepthPerThrowable>40</maxDepthPerThrowable>
+                            <maxLength>4096</maxLength>
+                            <shortenedClassNameLength>20</shortenedClassNameLength>
+                            <rootCauseFirst>true</rootCauseFirst>
+                            <exclude>sun\.reflect\..*\.invoke.*</exclude>
+                        </throwableConverter>
+                    </stackTrace>
+                </providers>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <springProfile name="non-json-logs">
+        <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    </springProfile>
+
+    <logger name="jsonLogger" additivity="false" level="DEBUG">
+        <appender-ref ref="consoleAppender"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="consoleAppender"/>
+    </root>
+</configuration>

@@ -3,8 +3,6 @@ package io.github.wesleyosantos91.domain.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.Instant;
 import java.util.LinkedHashSet;
@@ -16,7 +14,7 @@ import java.util.UUID;
 public class CustomerEntity {
 
     @Id
-    @ColumnDefault("gen_random_uuid()")
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     private UUID id;
 
@@ -30,13 +28,24 @@ public class CustomerEntity {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @CreatedDate
-    @ColumnDefault("now()")
     @Column(name = "created_at")
     private Instant createdAt;
 
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
     @OneToMany(mappedBy = "customer")
     private Set<OrderEntity> tbOrders = new LinkedHashSet<>();
+
+    @PrePersist
+    public void onPrePersist() {
+        this.createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        this.updatedAt = Instant.now();
+    }
 
     public Set<OrderEntity> getTbOrders() {
         return tbOrders;
@@ -78,4 +87,11 @@ public class CustomerEntity {
         this.createdAt = createdAt;
     }
 
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

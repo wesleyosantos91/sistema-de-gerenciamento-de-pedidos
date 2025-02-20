@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record CustomerRequest(
+public record CustomerQueryRequest(
         @NotBlank(groups = Groups.Create.class)
         @Size(min = 2, max = 120, groups = Groups.Create.class)
         String name,
