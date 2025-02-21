@@ -1,24 +1,19 @@
 package io.github.wesleyosantos91.api.v1.controller;
 
-import static io.github.wesleyosantos91.core.mapper.CustomerMapper.MAPPER;
-
 import io.github.wesleyosantos91.api.v1.request.CustomerRequest;
 import io.github.wesleyosantos91.core.validation.Groups;
-import io.github.wesleyosantos91.domain.model.CustomerModel;
 import io.github.wesleyosantos91.domain.service.CustomerService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.groups.ConvertGroup;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.HeaderParam;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static io.github.wesleyosantos91.core.mapper.CustomerMapper.MAPPER;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
