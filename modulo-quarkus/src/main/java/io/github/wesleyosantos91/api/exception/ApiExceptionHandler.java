@@ -52,13 +52,12 @@ public class ApiExceptionHandler {
     public static class DataIntegrityViolationExceptionMapper implements ExceptionMapper<PersistenceException> {
         @Override
         public Response toResponse(PersistenceException exception) {
-            Throwable cause = exception.getCause();
-            if (cause instanceof ConstraintViolationException) {
+            if (exception instanceof ConstraintViolationException) {
                 final var problemDetail = HttpProblem
                         .builder()
                         .withStatus(Response.Status.CONFLICT)
                         .withTitle("Data Integrity Violation")
-                        .withDetail(cause.getMessage())
+                        .withDetail(exception.getMessage())
                         .build();
 
                 return Response.status(Response.Status.CONFLICT).entity(problemDetail).build();
