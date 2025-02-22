@@ -1,27 +1,35 @@
 package io.github.wesleyosantos91.api.exception;
 
+import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
+import static java.util.List.of;
+
 import io.github.wesleyosantos91.api.v1.response.CustomProblemDetail;
 import io.github.wesleyosantos91.api.v1.response.ErrorResponse;
 import io.github.wesleyosantos91.domain.exception.CustomerHasOrdersException;
 import io.github.wesleyosantos91.domain.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.filter.ServerHttpObservationFilter;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import java.util.List;
 
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -33,7 +41,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         this.messageSource = messageSource;
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,
@@ -54,36 +61,46 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, problemDetail, headers, status, request);
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
     private ResponseEntity<ProblemDetail> handleResourceNotFoundException(HttpServletRequest request, ResourceNotFoundException ex) {
 
-        final ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-        problemDetail.setTitle(HttpStatus.NOT_FOUND.getReasonPhrase());
+        final CustomProblemDetail problemDetail =
+                new CustomProblemDetail(NOT_FOUND, "Resource not found",
+                        "The following errors occurred:", of(new ErrorResponse("error", getRootCauseMessage(ex))));
+        problemDetail.setTitle(NOT_FOUND.getReasonPhrase());
         ServerHttpObservationFilter.findObservationContext(request).ifPresent(context -> context.setError(ex));;
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail);
+        return ResponseEntity.status(NOT_FOUND).body(problemDetail);
     }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(CustomerHasOrdersException.class)
     public ResponseEntity<ProblemDetail> handleCustomerHasOrdersException(HttpServletRequest request, CustomerHasOrdersException ex) {
 
-        final ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
-        problemDetail.setTitle(HttpStatus.CONFLICT.getReasonPhrase());
-        ServerHttpObservationFilter.findObservationContext(request).ifPresent(context -> context.setError(ex));;
+        final var problemDetail = new CustomProblemDetail(HttpStatus.CONFLICT, "Customer has orders",
+                "The following errors occurred:", of(new ErrorResponse("error", getRootCauseMessage(ex))));
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(problemDetail);
     }
 
-    @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Data integrity violation")
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ProblemDetail> handleDataIntegrityViolationException(HttpServletRequest request, DataIntegrityViolationException ex) {
 
-        final ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
-        problemDetail.setTitle(HttpStatus.CONFLICT.getReasonPhrase());
-        problemDetail.setDetail(ExceptionUtils.getMessage(ex));
-        ServerHttpObservationFilter.findObservationContext(request).ifPresent(context -> context.setError(ex));;
+        final var rootCauseMessage = getRootCauseMessage(ex);
+
+        Pattern pattern = Pattern.compile("Key \\(.*\\)=\\(.*\\) already exists\\.");
+
+        Matcher matcher = pattern.matcher(rootCauseMessage);
+
+        if (matcher.find()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new CustomProblemDetail(HttpStatus.CONFLICT, "Data integrity violation",
+                            "The following errors occurred:", of(new ErrorResponse("error", matcher.group()))));
+        }
+
+        final var problemDetail = new CustomProblemDetail(HttpStatus.CONFLICT, "Data integrity violation",
+                "The following errors occurred:", of(new ErrorResponse("error", rootCauseMessage)));
+        ServerHttpObservationFilter
+                .findObservationContext(request).ifPresent(context -> context.setError(ex));
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(problemDetail);
     }

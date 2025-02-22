@@ -12,7 +12,7 @@ public class CustomProblemDetail extends ProblemDetail {
 
     public CustomProblemDetail(HttpStatus status, String title, String detail, List<ErrorResponse> errors) {
         this.setStatus(status.value());
-        this.setTitle(status.getReasonPhrase());
+        this.setTitle(title);
         this.setDetail(detail);
         this.setProperty(TIMESTAMP, Instant.now());
         this.setProperty("errors", errors);

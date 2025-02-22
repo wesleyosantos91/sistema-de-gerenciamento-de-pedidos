@@ -25,7 +25,6 @@ public interface CustomerMapper {
 
     CustomerModel toModel(CustomerRequest request);
 
-
     CustomerModel toModel(CustomerEntity entity);
 
     CustomerEntity toEntity(CustomerModel model);
