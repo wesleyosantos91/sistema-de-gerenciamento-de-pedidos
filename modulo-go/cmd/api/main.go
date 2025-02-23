@@ -1,9 +1,13 @@
 package main
 
 import (
-	"modulo-go/internal/config"
-	"modulo-go/internal/db"
+	"log"
+	"modulo-go/pkg/api/router"
+	"modulo-go/pkg/config"
+	"modulo-go/pkg/db"
 	"os"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -17,4 +21,17 @@ func main() {
 
 	db.Connect()
 	db.RunMigrations(db.InstanceSqlDatabase())
+
+	r := gin.Default()
+
+	router.SetupRoutes(r, db.DB)
+
+	serverPort := os.Getenv("SERVER_PORT")
+	if serverPort == "" {
+		serverPort = "8080"
+	}
+
+	log.Println("Server running on port", serverPort)
+
+	r.Run(":" + serverPort)
 }
