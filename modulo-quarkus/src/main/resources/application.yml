@@ -1,4 +1,6 @@
 quarkus:
+  log:
+    level: ERROR
   datasource:
     devservices:
       enabled: false

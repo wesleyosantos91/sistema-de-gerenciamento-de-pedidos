@@ -2,6 +2,7 @@ package io.github.wesleyosantos91.domain.entity;
 
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +16,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.Instant;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -54,6 +56,10 @@ public class CustomerEntity extends PanacheEntityBase {
     @PreUpdate
     public void onPreUpdate() {
         this.updatedAt = Instant.now();
+    }
+
+    public static Optional<CustomerEntity> findCustomerWithoutOrdersById(UUID id) {
+        return find("id = ?1 and tbOrders is not empty", id).firstResultOptional();
     }
 
     public Set<OrderEntity> getTbOrders() {

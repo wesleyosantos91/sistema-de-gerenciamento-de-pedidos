@@ -15,7 +15,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
@@ -24,6 +23,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.List;
 import java.util.Optional;
+
+import static java.util.List.of;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -55,23 +58,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, problemDetail, headers, status, request);
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
     private ResponseEntity<ProblemDetail> handleResourceNotFoundException(HttpServletRequest request, ResourceNotFoundException ex) {
 
-        final ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
-        problemDetail.setTitle(HttpStatus.NOT_FOUND.getReasonPhrase());
+        final CustomProblemDetail problemDetail =
+                new CustomProblemDetail(NOT_FOUND, "Resource not found",
+                        "The following errors occurred:", of(new ErrorResponse("error", getRootCauseMessage(ex))));
+        problemDetail.setTitle(NOT_FOUND.getReasonPhrase());
         ServerHttpObservationFilter.findObservationContext(request).ifPresent(context -> context.setError(ex));;
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail);
+        return ResponseEntity.status(NOT_FOUND).body(problemDetail);
     }
 
     @ExceptionHandler(CustomerHasOrdersException.class)
     public ResponseEntity<ProblemDetail> handleCustomerHasOrdersException(HttpServletRequest request, CustomerHasOrdersException ex) {
 
-        final ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
-        problemDetail.setTitle(HttpStatus.CONFLICT.getReasonPhrase());
-        ServerHttpObservationFilter.findObservationContext(request).ifPresent(context -> context.setError(ex));;
+        final var problemDetail = new CustomProblemDetail(HttpStatus.CONFLICT, "Customer has orders",
+                "The following errors occurred:", of(new ErrorResponse("error", getRootCauseMessage(ex))));
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(problemDetail);
     }

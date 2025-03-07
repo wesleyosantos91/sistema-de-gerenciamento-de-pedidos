@@ -4,6 +4,6 @@ CREATE TABLE tb_orders
     customer_id UUID           NOT NULL,
     total_price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
     created_at  TIMESTAMP               DEFAULT now(),
-    updated_at  TIMESTAMP               DEFAULT now(),
+    updated_at  TIMESTAMP
         CONSTRAINT fk_orders_customer FOREIGN KEY (customer_id) REFERENCES tb_customers (id) ON DELETE CASCADE
 );
