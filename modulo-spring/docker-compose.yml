@@ -1,9 +1,52 @@
 version: '3.9'
 
 services:
+  app:
+    container_name: sistema-de-gerenciamento-de-pedidos
+    restart: always
+    build:
+      context: .
+    environment:
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATADOG_API_KEY=${DATADOG_API_KEY}
+      - DATADOG_APP_KEY=${DATADOG_APP_KEY}
+      - DATADOG_URI=${DATADOG_URI}
+      - DD_SERVICE=sistema-de-gerenciamento-de-pedidos
+      - DD_ENV=${DD_ENV}
+      - DD_VERSION=0.0.1
+      - DD_AGENT_HOST=host.docker.internal
+      - DD_TAGS=app:sistema-de-gerenciamento-de-pedidos teste:v1
+    ports:
+      - "8080:8080"
+    extra_hosts:                             # Linux only
+      - "host.docker.internal:host-gateway"  # Linux only
+    labels:
+      - com.datadoghq.tags.service="sistema-de-gerenciamento-de-pedidos"
+      - com.datadoghq.tags.env=${DD_ENV}
+      - com.datadoghq.tags.version="0.0.1"
+    depends_on:
+      - postgres
+      - datadog-agent
+  datadog-agent:
+    container_name: datadog-agent
+    image: "gcr.io/datadoghq/agent:latest"
+    pid: host
+    ports:
+      - 8126:8126
+    environment:
+      - DD_API_KEY=${DATADOG_API_KEY}
+      - DD_SITE=${DD_SITE}
+      - DD_APM_NON_LOCAL_TRAFFIC=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
   postgres:
     image: postgres:17.3
-    container_name: my_postgres
+    container_name: postgres
     restart: always
     environment:
       POSTGRES_USER: postgres

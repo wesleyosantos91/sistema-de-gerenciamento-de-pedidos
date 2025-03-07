@@ -1,5 +1,6 @@
 package io.github.wesleyosantos91.domain.service;
 
+import io.github.wesleyosantos91.core.metric.annotation.CounterExecution;
 import io.github.wesleyosantos91.domain.entity.CustomerEntity;
 import io.github.wesleyosantos91.domain.exception.CustomerHasOrdersException;
 import io.github.wesleyosantos91.domain.exception.ResourceNotFoundException;
@@ -7,13 +8,11 @@ import io.github.wesleyosantos91.domain.model.CustomerModel;
 import io.github.wesleyosantos91.domain.repository.CustomerRepository;
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.MessageFormat;
 import java.util.UUID;
 
 import static io.github.wesleyosantos91.core.mapper.CustomerMapper.MAPPER;
@@ -28,12 +27,14 @@ public class CustomerService {
         this.repository = repository;
     }
 
+    @CounterExecution(name = "customers.serivce.create")
     @Transactional
     public CustomerModel create(CustomerModel model) {
         final var entity= repository.save(MAPPER.toEntity(model));
         return MAPPER.toModel(entity);
     }
 
+    @CounterExecution(name = "customers.serivce.findById")
     @Transactional(readOnly = true)
     public CustomerModel findById(UUID id) throws ResourceNotFoundException {
         return repository.findById(id)
@@ -41,13 +42,11 @@ public class CustomerService {
                 .orElseThrow(() -> new ResourceNotFoundException(format("Not found regitstry with code {0}", id)));
     }
 
-    @Counted(value = "customer.service.search")
-    @Timed(value = "customer.service.search")
+    @CounterExecution(name = "customer.service.search")
     @Transactional(readOnly = true)
     public Page<CustomerModel> search(CustomerModel model, Pageable pageable) {
 
-        final var userEntityExample = Example.of(MAPPER.toEntity(model));
-        final var page = repository.findAll(userEntityExample, pageable);
+        final var page = repository.search(MAPPER.toEntity(model), pageable);
 
         return MAPPER.toPageModel(page);
     }

@@ -13,6 +13,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +66,8 @@ public record CustomerController(CustomerService service) {
 
     @GetMapping
     public ResponseEntity<PagedModel<CustomerResponse>> search(@RequestHeader("x-correlationID") @Pattern(regexp = REGEX_UUID) String correlationId,
-                                                               @ModelAttribute CustomerQueryRequest query, Pageable page) {
+                                                               @ModelAttribute CustomerQueryRequest query,
+                                                               @PageableDefault(sort = "createdAt", direction = Sort.Direction.ASC) Pageable page) {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         LOGGER.info("Function started 'find customer'");

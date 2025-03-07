@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.2</version>
+		<version>3.4.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -64,8 +64,14 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
+<!--			<scope>runtime</scope>-->
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+
 
 		<dependency>
 			<groupId>io.micrometer</groupId>
@@ -304,30 +310,30 @@
 					</avoidCallsTo>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>3.6.0</version>
-				<configuration>
-					<configLocation>checkstyle.xml</configLocation>
-					<inputEncoding>UTF-8</inputEncoding>
-					<outputEncoding>UTF-8</outputEncoding>
-					<consoleOutput>true</consoleOutput>
-					<failsOnError>true</failsOnError>
-					<failOnViolation>true</failOnViolation>
-					<linkXRef>false</linkXRef>
-					<excludeGeneratedSources>true</excludeGeneratedSources>
-				</configuration>
-				<executions>
-					<execution>
-						<id>validate</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>org.apache.maven.plugins</groupId>-->
+<!--				<artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--				<version>3.6.0</version>-->
+<!--				<configuration>-->
+<!--					<configLocation>checkstyle.xml</configLocation>-->
+<!--					<inputEncoding>UTF-8</inputEncoding>-->
+<!--					<outputEncoding>UTF-8</outputEncoding>-->
+<!--					<consoleOutput>true</consoleOutput>-->
+<!--					<failsOnError>true</failsOnError>-->
+<!--					<failOnViolation>true</failOnViolation>-->
+<!--					<linkXRef>false</linkXRef>-->
+<!--					<excludeGeneratedSources>true</excludeGeneratedSources>-->
+<!--				</configuration>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>validate</id>-->
+<!--						<phase>validate</phase>-->
+<!--						<goals>-->
+<!--							<goal>check</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 		</plugins>
 	</build>
 

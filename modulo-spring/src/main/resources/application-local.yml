@@ -29,12 +29,16 @@ spring:
     password: ${spring.datasource.password}
     locations: classpath:db/migrations
 management:
+  metrics:
+    tags:
+      app-name: ${spring.application.name}
   datadog:
     metrics:
       export:
         api-key: ${DATADOG_API_KEY}
         application-key: ${DATADOG_APP_KEY}
         uri: ${DATADOG_URI}
+        step: 10s
   tracing:
     enabled: true
     sampling:
@@ -47,7 +51,9 @@ management:
   endpoints:
     web:
       exposure:
-        include: '*'
+        include:
+          - metrics
+          - health
   endpoint:
     health:
       show-details: always

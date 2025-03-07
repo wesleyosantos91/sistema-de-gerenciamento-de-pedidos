@@ -19,12 +19,12 @@ spring:
     password: ${spring.datasource.password}
     locations: classpath:db/migrations
 management:
-  datadog:
-    metrics:
-      export:
-        api-key: ${DATADOG_API_KEY}
-        application-key: ${DATADOG_APP_KEY}
-        uri: ${DATADOG_URI}
+#  datadog:
+#    metrics:
+#      export:
+#        api-key: ${DATADOG_API_KEY}
+#        application-key: ${DATADOG_APP_KEY}
+#        uri: ${DATADOG_URI}
   tracing:
     enabled: true
     sampling:

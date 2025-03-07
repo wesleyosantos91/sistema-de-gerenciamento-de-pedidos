@@ -5,7 +5,8 @@ import io.github.wesleyosantos91.api.v1.response.ErrorResponse;
 import io.github.wesleyosantos91.domain.exception.CustomerHasOrdersException;
 import io.github.wesleyosantos91.domain.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.postgresql.util.PSQLException;
+import org.postgresql.util.ServerErrorMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -22,6 +23,7 @@ import org.springframework.web.filter.ServerHttpObservationFilter;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -33,7 +35,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         this.messageSource = messageSource;
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,
@@ -65,7 +66,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail);
     }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(CustomerHasOrdersException.class)
     public ResponseEntity<ProblemDetail> handleCustomerHasOrdersException(HttpServletRequest request, CustomerHasOrdersException ex) {
 
@@ -76,16 +76,41 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(problemDetail);
     }
 
-    @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Data integrity violation")
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ProblemDetail> handleDataIntegrityViolationException(HttpServletRequest request, DataIntegrityViolationException ex) {
 
-        final ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        String userMessage = "Conflito ao processar a requisição. Já existe um registro com um valor único.";
+        String violatedConstraint = extractConstraintName(ex);
+        String field = mapConstraintToField(violatedConstraint);
+
+        final ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, userMessage);
         problemDetail.setTitle(HttpStatus.CONFLICT.getReasonPhrase());
-        problemDetail.setDetail(ExceptionUtils.getMessage(ex));
+
+        if (field != null) {
+            problemDetail.setProperty("field", field);
+            LOGGER.warn("Violação de constraint conhecida (constraint: {}, campo: {}): {}", violatedConstraint, field, ex.getMessage());
+        } else {
+            LOGGER.error("Violação de constraint desconhecida: {}", ex.getMessage(), ex);
+        }
+
         ServerHttpObservationFilter.findObservationContext(request).ifPresent(context -> context.setError(ex));;
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(problemDetail);
     }
 
+    private String extractConstraintName(DataIntegrityViolationException ex) {
+        return Optional.ofNullable(ex.getMostSpecificCause())
+                .filter(PSQLException.class::isInstance)
+                .map(PSQLException.class::cast)
+                .map(PSQLException::getServerErrorMessage)
+                .map(ServerErrorMessage::getConstraint)
+                .orElse(null);
+    }
+
+    private String mapConstraintToField(String constraint) {
+        return switch (constraint) {
+            case "tb_customers_email_key" -> "email";
+            default -> null;
+        };
+    }
 }
